@@ -92,6 +92,7 @@ if (DO_LLM) {
 # --- cross-reference with GAIN (+ example-level match when DO_LLM) + dashboard ---
 run_step("Crossref  -> evidence_flagged / review_queue / priority / contacts", "identify/GAIN_PHASE5_CROSSREF.R")
 run_step("Match v2  -> product-level match vs every GAIN example (org/type/name/year)", "identify/GAIN_MATCH_V2.R")
+run_step("Questionnaire -> read catalogue DDI for displacement questions", "identify/GAIN_QUESTIONNAIRE_CHECK.R")
 run_step("Finalize  -> combined verdict + reach-out shortlist + dashboard table", "identify/GAIN_FINALIZE.R")
 run_step("Power BI  -> powerbi_export/ pack",                   "identify/GAIN_POWERBI_EXPORT.R")
 # Displacement-CONTEXT dimension (UNICEF SDMX: IDP magnitudes per country, IDMC-

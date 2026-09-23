@@ -84,3 +84,23 @@ safe_write <- function(df, path) {
   message("  (", basename(path), " was locked - wrote ", basename(alt), " instead)")
   invisible(alt)
 }
+
+# ------------------------------------------------------------------------------
+# Is a URL on the national statistical office's own website? (NSO_Full_Registry)
+# Used where the LLM's organisation field is unreliable: a document on the NSO's
+# site is the NSO's. Vectorised over url + country.
+# ------------------------------------------------------------------------------
+.nso_domains <- NULL
+on_nso_site <- function(url, ctry) {
+  if (is.null(.nso_domains))
+    .nso_domains <<- if (file.exists("NSO_Full_Registry.csv"))
+      suppressMessages(readr::read_csv("NSO_Full_Registry.csv", show_col_types = FALSE)) %>%
+        transmute(country = harmonize_country(country), domain = tolower(domain)) else
+      tibble(country = character(), domain = character())
+  host <- tolower(str_match(coalesce(as.character(url), ""), "^https?://([^/]+)")[, 2])
+  ctry <- harmonize_country(ctry)
+  vapply(seq_along(host), function(i) {
+    doms <- .nso_domains$domain[.nso_domains$country == ctry[i]]
+    !is.na(host[i]) && length(doms) > 0 && any(host[i] == doms | str_ends(host[i], paste0(".", doms)))
+  }, logical(1))
+}
