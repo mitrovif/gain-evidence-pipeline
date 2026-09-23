@@ -28,12 +28,24 @@ MIN_YEAR <- 2024
 MAX_YEAR <- 2026
 
 # Adjust to your actual filenames
-L1 <- list.files(pattern = "^LAYER1_catalog_records_.*\\.csv$") %>% sort() %>% last()
+# Layers 1 and 3: ALL dated files are combined (newest first, so a record's most
+# recent metadata wins on duplicate URLs). A re-harvest can return FEWER records
+# (e.g. NSO sitemaps that are down that day) - reading only the newest file would
+# silently drop what earlier runs found.
+read_all_newest_first <- function(files) {
+  if (!length(files)) return(NULL)
+  map_dfr(rev(sort(files)), ~ read_csv(.x, show_col_types = FALSE,
+                                       col_types = cols(.default = col_character()))) %>%
+    distinct(url, .keep_all = TRUE) %>% type_convert(col_types = cols())
+}
+L1_ALL <- list.files(pattern = "^LAYER1_catalog_records_.*\\.csv$")
+L1 <- if (length(L1_ALL)) sort(L1_ALL) %>% last() else character(0)
 # Layer 2 = ALL search-hit files (the original harvest + any "since" refresh
 # runs), de-duplicated by URL below; older files win so first-seen is kept.
 L2_ALL <- list.files(pattern = "^LAYER2_search_hits_.*\\.csv$") %>% sort()
 L2 <- if (length(L2_ALL)) L2_ALL[1] else character(0)
-L3 <- list.files(pattern = "^LAYER3_url_inventory_.*\\.csv$") %>% sort() %>% last()
+L3_ALL <- list.files(pattern = "^LAYER3_url_inventory_.*\\.csv$")
+L3 <- if (length(L3_ALL)) sort(L3_ALL) %>% last() else character(0)
 
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0 || all(is.na(a))) b else a
 
@@ -91,8 +103,9 @@ norm_pop <- function(txt) {
 records <- list()
 
 # ---- Layer 1 ----
-if (length(L1) == 1 && !is.na(L1)) {
-  l1 <- read_csv(L1, show_col_types = FALSE) %>%
+if (length(L1_ALL) > 0) {
+  message(paste("Layer 1 files:", paste(sort(L1_ALL), collapse = ", ")))
+  l1 <- read_all_newest_first(L1_ALL) %>%
     mutate(across(any_of(c("title", "producer", "country")), repair_mojibake))
   # microdata/catalog records: 2024-2026 only; DHS/MICS get 2022+ (long cycles)
   n_l1_raw <- nrow(l1)
@@ -170,8 +183,9 @@ if (!is.na(ST)) {
 }
 
 # ---- Layer 3 + 4: fetch titles for URLs not already covered ----
-if (length(L3) == 1 && !is.na(L3)) {
-  l3 <- read_csv(L3, show_col_types = FALSE) %>%
+if (length(L3_ALL) > 0) {
+  message(paste("Layer 3 files:", paste(sort(L3_ALL), collapse = ", ")))
+  l3 <- read_all_newest_first(L3_ALL) %>%
     mutate(across(any_of(c("link_text")), repair_mojibake))
   if (!"link_text" %in% names(l3)) l3$link_text <- NA_character_
   covered_urls <- c(records$l1$url %||% character(0),
