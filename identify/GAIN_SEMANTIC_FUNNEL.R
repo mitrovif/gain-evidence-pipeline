@@ -33,6 +33,11 @@ MAX_PER_DOMAIN  <- as.integer(Sys.getenv("GAIN_MAX_PER_DOMAIN", "25"))
 # still gets read. Low-value docs simply come back with low llm_relevance, so the
 # evidence is not polluted. Default 0 = unchanged behaviour.
 READ_ALL        <- Sys.getenv("GAIN_READ_ALL", "0") == "1"
+# ...and "every" means every: the MAX_EXTRACTS / per-domain budget caps are lifted
+# too (Sep 2026: with them in place READ_ALL silently read only the top 110 of
+# 1,511 eligible candidates). Already-read documents are cached, so a re-run only
+# pays for new ones.
+if (READ_ALL) { MAX_EXTRACTS <- .Machine$integer.max; MAX_PER_DOMAIN <- .Machine$integer.max }
 EVIDENCE_CACHE  <- "evidence_cache"   # where ENRICH cached fetched documents
 
 if (!ollama_available()) {
