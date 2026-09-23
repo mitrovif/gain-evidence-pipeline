@@ -29,7 +29,10 @@ MAX_YEAR <- 2026
 
 # Adjust to your actual filenames
 L1 <- list.files(pattern = "^LAYER1_catalog_records_.*\\.csv$") %>% sort() %>% last()
-L2 <- list.files(pattern = "^LAYER2_search_hits_.*\\.csv$") %>% sort() %>% last()
+# Layer 2 = ALL search-hit files (the original harvest + any "since" refresh
+# runs), de-duplicated by URL below; older files win so first-seen is kept.
+L2_ALL <- list.files(pattern = "^LAYER2_search_hits_.*\\.csv$") %>% sort()
+L2 <- if (length(L2_ALL)) L2_ALL[1] else character(0)
 L3 <- list.files(pattern = "^LAYER3_url_inventory_.*\\.csv$") %>% sort() %>% last()
 
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0 || all(is.na(a))) b else a
@@ -128,9 +131,12 @@ if (length(L1) == 1 && !is.na(L1)) {
 }
 
 # ---- Layer 2 ----
-if (length(L2) == 1 && !is.na(L2)) {
-  l2 <- read_csv(L2, show_col_types = FALSE) %>%
+if (length(L2_ALL) > 0) {
+  l2 <- map_dfr(L2_ALL, ~ read_csv(.x, show_col_types = FALSE,
+                                   col_types = cols(.default = col_character()))) %>%
+    distinct(url, .keep_all = TRUE) %>%
     mutate(across(any_of(c("title", "snippet")), repair_mojibake))
+  message(paste("Layer 2 files:", paste(L2_ALL, collapse = ", ")))
   records$l2 <- l2 %>% transmute(
     country, title, url,
     populations = map_chr(paste(title, snippet, population), norm_pop),

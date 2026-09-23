@@ -36,6 +36,20 @@ library(jsonlite)
 stamp <- format(Sys.Date(), "%Y%m%d")
 PROGRESS_FILE <- "LAYER2_progress.csv"
 
+# REFRESH MODE ("what is new since the last run"): the normal run skips every
+# country/language/query already in LAYER2_progress.csv, so a plain re-run finds
+# nothing. With GAIN_REFRESH_SINCE=YYYY-MM-DD the SAME queries run again, but
+# restricted to pages published on/after that date, with their own progress log
+# and hits file (so the original harvest is never touched). The merge step reads
+# ALL LAYER2_search_hits_*.csv files and de-duplicates by URL.
+#   Sys.setenv(GAIN_REFRESH_SINCE = "2026-06-20"); source("identify/GAIN_LAYER2_SEARCH_API_5.R")
+REFRESH_SINCE <- Sys.getenv("GAIN_REFRESH_SINCE", "")
+if (nzchar(REFRESH_SINCE)) {
+  stopifnot("GAIN_REFRESH_SINCE must be YYYY-MM-DD" = !is.na(as.Date(REFRESH_SINCE, "%Y-%m-%d")))
+  PROGRESS_FILE <- paste0("LAYER2_progress_since", gsub("-", "", REFRESH_SINCE), ".csv")
+  message("REFRESH MODE: only pages published since ", REFRESH_SINCE, " (progress: ", PROGRESS_FILE, ")")
+}
+
 # ------------------------------------------------------------------------------
 # SEARCH API KEY POOL
 # Keys are never hard-coded: they are read from environment variables.
@@ -359,6 +373,10 @@ months_since_2024 <- max(1, (as.integer(format(Sys.Date(), "%Y")) - 2024) * 12 +
                             as.integer(format(Sys.Date(), "%m")))
 RECENCY_GOOGLE <- paste0("m", months_since_2024)
 RECENCY_BRAVE  <- "2024-01-01to2026-12-31"
+if (nzchar(REFRESH_SINCE)) {
+  RECENCY_GOOGLE <- paste0("d", max(1L, as.integer(Sys.Date() - as.Date(REFRESH_SINCE))))
+  RECENCY_BRAVE  <- paste0(REFRESH_SINCE, "to", format(Sys.Date(), "%Y-%m-%d"))
+}
 
 # ------------------------------------------------------------------------------
 # ENGINE A: Google Programmable Search
@@ -454,6 +472,7 @@ search_brave <- function(query, domain) {
 # "BADKEY", or NULL. Never prints the key value.
 # ------------------------------------------------------------------------------
 EXA_START_DATE <- "2024-01-01T00:00:00.000Z"   # recency floor (matches Brave)
+if (nzchar(REFRESH_SINCE)) EXA_START_DATE <- paste0(REFRESH_SINCE, "T00:00:00.000Z")
 search_exa <- function(query, domain) {
   key <- Sys.getenv("EXA_API_KEY")
   if (key == "") return(NULL)
@@ -518,7 +537,9 @@ if (Sys.getenv("GAIN_RETRY_BRAVE") == "1" && "key_slot" %in% names(done)) {
                 "Brave-answered queries will be retried on Google"))
 }
 
-results_file <- paste0("LAYER2_search_hits_", stamp, ".csv")
+results_file <- if (nzchar(REFRESH_SINCE))
+  paste0("LAYER2_search_hits_since", gsub("-", "", REFRESH_SINCE), "_", stamp, ".csv") else
+  paste0("LAYER2_search_hits_", stamp, ".csv")
 quota_hit <- FALSE
 
 # When Google is unavailable/broken, set GAIN_SKIP_GOOGLE=1 to bypass it entirely
