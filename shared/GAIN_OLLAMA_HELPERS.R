@@ -152,7 +152,14 @@ ollama_available <- function() {
 # Content-hash disk cache
 # ------------------------------------------------------------------------------
 .cache_path <- function(kind, key) file.path(OLLAMA_CACHE_DIR, paste0(kind, "_", key, ".rds"))
-.cache_get  <- function(kind, key) { p <- .cache_path(kind, key); if (file.exists(p)) readRDS(p) else NULL }
+# an unreadable cache file (OneDrive online-only placeholder that fails to
+# download, or a truncated write) is a cache MISS, not a fatal error - one bad
+# file stopped a whole read-all run in Sep 2026
+.cache_get  <- function(kind, key) {
+  p <- .cache_path(kind, key)
+  if (!file.exists(p)) return(NULL)
+  tryCatch(readRDS(p), error = function(e) { message("  (cache unreadable, recomputing: ", basename(p), ")"); NULL })
+}
 .cache_put  <- function(kind, key, val) saveRDS(val, .cache_path(kind, key))
 
 # ------------------------------------------------------------------------------

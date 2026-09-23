@@ -78,10 +78,13 @@ check_one <- function(base, path, id) {
                                 hit_examples = NA_character_, abstract_hit = NA))
   xml_ns_strip(x)
   vars <- xml_find_all(x, ".//var")
-  vtxt <- vapply(vars, function(v) str_squish(paste(
-    xml_attr(v, "name"), xml_text(xml_find_first(v, "./labl")),
-    coalesce(xml_text(xml_find_first(v, ".//qstnLit")), ""),
-    "[", paste(xml_text(xml_find_all(v, ".//catgry/labl")), collapse = " | "), "]")), character(1))
+  # vectorised (one XPath call per field for ALL variables): the per-variable
+  # version ran 4+ hours on a 20 MB census DDI (INEGI)
+  labl <- xml_text(xml_find_first(vars, "./labl"))
+  qstn <- coalesce(xml_text(xml_find_first(vars, "./qstn/qstnLit")), "")
+  cats <- vapply(xml_find_all(vars, "./catgry/labl", flatten = FALSE),
+                 function(n) paste(head(xml_text(n), 60), collapse = " | "), character(1))
+  vtxt <- str_squish(paste(xml_attr(vars, "name"), labl, qstn, "[", cats, "]"))
   disp <- str_detect(vtxt, DISP_PAT)
   stl  <- str_detect(vtxt, STATELESS_PAT)
   strong <- disp | stl
@@ -93,9 +96,18 @@ check_one <- function(base, path, id) {
          abstract_hit = str_detect(abst, DISP_PAT) | str_detect(abst, STATELESS_PAT))
 }
 
-res <- cat_rows %>% mutate(r = pmap(list(base, path, cat_id), check_one)) %>% unnest(r) %>%
+# 2-minute ceiling per study so one pathological file cannot stall the run
+check_one_limited <- function(base, path, id) {
+  setTimeLimit(elapsed = 120, transient = TRUE); on.exit(setTimeLimit(elapsed = Inf))
+  tryCatch(check_one(base, path, id), error = function(e)
+    tibble(ddi_found = TRUE, n_var = NA_integer_, n_var_hits = NA_integer_,
+           populations = NA_character_, hit_vars = NA_character_,
+           hit_examples = paste("not scanned:", conditionMessage(e)), abstract_hit = NA))
+}
+res <- cat_rows %>% mutate(r = pmap(list(base, path, cat_id), check_one_limited)) %>% unnest(r) %>%
   mutate(questionnaire_verdict = case_when(
     !ddi_found                      ~ "no DDI available",
+    is.na(n_var)                    ~ "DDI too large / not scanned",
     n_var_hits > 0                  ~ "displacement/statelessness questions found",
     n_var == 0 & abstract_hit       ~ "no variable list; abstract mentions displacement",
     n_var == 0                      ~ "no variable list",
