@@ -28,13 +28,16 @@
 # all layers are resumable and cached, so nothing is re-done unnecessarily.
 # ==============================================================================
 
-DO_SCRAPE <- TRUE     # set FALSE to skip Layers 1-3 (re-score existing data only)
-DO_LLM    <- FALSE    # set TRUE for the local Ollama semantic + example-level layer
+# defaults below; override without editing via env, e.g. GAIN_DO_SCRAPE=0 GAIN_DO_LLM=1
+DO_SCRAPE <- Sys.getenv("GAIN_DO_SCRAPE", "1") == "1"  # 0 = skip Layers 1-3 (re-score existing data only)
+DO_LLM    <- Sys.getenv("GAIN_DO_LLM",    "0") == "1"  # 1 = local LLM semantic + example-level layer
 
 # --- LLM run knobs (only used when DO_LLM = TRUE; safe to leave as-is) ---------
-Sys.setenv(GAIN_MAX_EXTRACTS      = "110")   # funnel: ~3 h first pass
-Sys.setenv(GAIN_GATE_SIM          = "0.60")  # funnel: embedding-similarity cutoff
-Sys.setenv(GAIN_MAX_ADJUDICATIONS = "450")   # crossref: example-match decisions (~+1.5 h)
+# (only set when not already given, so a caller's env wins)
+set_default <- function(k, v) if (!nzchar(Sys.getenv(k))) do.call(Sys.setenv, setNames(list(v), k))
+set_default("GAIN_MAX_EXTRACTS",      "110")   # funnel: ~3 h first pass (ignored with GAIN_READ_ALL=1)
+set_default("GAIN_GATE_SIM",          "0.60")  # funnel: embedding-similarity cutoff
+set_default("GAIN_MAX_ADJUDICATIONS", "450")   # crossref: example-match decisions (~+1.5 h)
 
 # sanity: are we in the right folder?
 if (!file.exists("identify/GAIN_ENRICH_EVIDENCE.R")) {
@@ -88,6 +91,7 @@ if (DO_LLM) {
 
 # --- cross-reference with GAIN (+ example-level match when DO_LLM) + dashboard ---
 run_step("Crossref  -> evidence_flagged / review_queue / priority / contacts", "identify/GAIN_PHASE5_CROSSREF.R")
+run_step("Match v2  -> product-level match vs every GAIN example (org/type/name/year)", "identify/GAIN_MATCH_V2.R")
 run_step("Finalize  -> combined verdict + reach-out shortlist + dashboard table", "identify/GAIN_FINALIZE.R")
 run_step("Power BI  -> powerbi_export/ pack",                   "identify/GAIN_POWERBI_EXPORT.R")
 # Displacement-CONTEXT dimension (UNICEF SDMX: IDP magnitudes per country, IDMC-
