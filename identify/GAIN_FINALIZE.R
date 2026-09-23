@@ -26,6 +26,7 @@
 #                                   AI saw only a snippet: a low score means
 #                                   "unknown", not "irrelevant"
 #   reach out                       AI: displaced people counted, score >= REACH_MIN
+#   (questionnaire check: displacement/statelessness question found -> reach out)
 #   review then reach out           counted, score >= 50; or a new edition / new
 #                                   output of a GAIN example (relevant by definition)
 #   unsure - check questionnaire    the AI's default 40 / not counted: it found no
@@ -132,13 +133,15 @@ final_confidence <- ifelse(!read, "unverified (keyword only)",
 # ---- questionnaire check (identify/GAIN_QUESTIONNAIRE_CHECK.R), if run --------
 qc_file <- tail(sort(list.files(".", "^questionnaire_check_.*\\.csv$")), 1)
 qv <- rep(NA_character_, nrow(d)); qhits <- rep(NA_character_, nrow(d))
+qvars <- rep(NA_character_, nrow(d)); qpops <- rep(NA_character_, nrow(d))
 if (length(qc_file)) {
   qc <- suppressMessages(read_csv(qc_file, show_col_types = FALSE)) %>% distinct(url, .keep_all = TRUE)
   j <- match(url, qc$url)
   qv <- qc$questionnaire_verdict[j]; qhits <- qc$hit_examples[j]
+  if ("hit_vars" %in% names(qc)) { qvars <- qc$hit_vars[j]; qpops <- qc$populations[j] }
   message("Questionnaire check: ", qc_file, " (", sum(!is.na(qv)), " candidates covered)")
 }
-q_yes <- coalesce(qv == "displacement questions found", FALSE)
+q_yes <- coalesce(str_detect(qv, "questions found"), FALSE)
 q_no  <- coalesce(qv == "no displacement question", FALSE)
 
 # ---- final_tier ----------------------------------------------------------------
@@ -160,9 +163,10 @@ final_tier <- case_when(
   # its parent is already in GAIN, so it is relevant by definition (reviewer: R08
   # Canada BDIM, a new edition the AI scored 45) - never below "review then reach out"
   v2cat %in% c("new edition", "new output of GAIN example") ~ "review then reach out",
-  # the questionnaire overrides the AI's catalogue-page guess (reviewer: Nigeria
-  # DHS 2024 has a forced-displacement question; Lesotho DHS 2023-24 has none)
-  q_yes                                ~ "review then reach out",
+  # the questionnaire overrides the AI's catalogue-page guess. Reviewer (Sep 2026):
+  # a DHS forced-displacement question (v175 answer "Forced displacement") or a
+  # stateless answer option is ENOUGH TO ASK -> reach out
+  q_yes                                ~ "reach out",
   q_no & final_score < 70              ~ "low",
   unreadable                           ~ "could not read - check by hand",
   unsure                               ~ "unsure - check questionnaire",
@@ -173,6 +177,7 @@ final_tier <- case_when(
 ask_type <- case_when(
   v2cat == "new edition"                ~ "update GAIN example (new edition)",
   v2cat == "new output of GAIN example" ~ "new example (output of a GAIN example)",
+  q_yes & !counted                      ~ paste0("new example (questionnaire identifies ", coalesce(qpops, "displacement"), ")"),
   route == "regional body" & eurostat   ~ "regional example (Eurostat)",
   TRUE                                  ~ "new example")
 
@@ -190,7 +195,8 @@ final_reason <- case_when(
       coalesce(na_if(pidx, ""), "?"), coalesce(na_if(gidx, ""), "?"), substr(gtitle, 1, 60)),
   historic ~ sprintf("reference year %d is before %d", year_n, HISTORIC_BEFORE),
   final_tier == "could not read - check by hand" ~ "document text not retrievable; AI saw a snippet only",
-  q_yes & !counted ~ paste0("questionnaire asks about displacement: ", substr(coalesce(qhits, ""), 1, 120)),
+  q_yes & !counted ~ paste0("questionnaire identifies ", coalesce(qpops, "displacement"), " (", coalesce(qvars, ""), "): ",
+                            substr(coalesce(qhits, ""), 1, 100)),
   q_no & final_tier == "low" ~ "questionnaire read: no displacement question",
   final_tier == "unsure - check questionnaire" ~ "AI found no evidence either way (default 40) - check the questionnaire/variables",
   final_tier == "reach out" ~ sprintf("AI: counted (%s), rel %d, %s%s",
@@ -210,6 +216,7 @@ out <- d %>% mutate(
   final_confidence = final_confidence, final_reason = final_reason,
   use_for_sdg = use_for_sdg, final_series_key = series_key,
   questionnaire_verdict = qv, questionnaire_hits = qhits,
+  questionnaire_vars = qvars, questionnaire_populations = qpops,
   disp_country = disp_country, disp_org = org_s, disp_instrument = title_s,
   disp_year = as.character(pk("llm_year")),
   disp_population = as.character(pk("llm_population")),
@@ -249,6 +256,9 @@ readr::write_excel_csv(short, sprintf("GAIN_REACHOUT_SHORTLIST_%s.csv", today))
 sdg <- out %>% filter(use_for_sdg, is_series_primary) %>%
   transmute(country = disp_country, organization = disp_org, instrument = disp_instrument,
             year = disp_year, final_tier, in_gain = final_tier == "already in GAIN",
+            # the variables to use for our own tabulation (reviewer: e.g. Lesotho
+            # DHS v175 - analyse it ourselves for SDG disaggregation)
+            populations = questionnaire_populations, variables = questionnaire_vars,
             matched_gain_pindex2 = disp_pidx, url = disp_url)
 readr::write_excel_csv(sdg, sprintf("GAIN_SDG_HANDOFF_%s.csv", today))
 

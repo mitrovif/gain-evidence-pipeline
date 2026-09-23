@@ -60,7 +60,7 @@ if (!file.exists(sheet_path)) {
   strata <- if (FOCUS == "feedback") list(
     # round 2: aimed at what the round-1 reviewer flagged (see GAIN_FINALIZE.R rules)
     list("questionnaire decided",  function(x) !is.na(x$questionnaire_verdict) &
-           x$questionnaire_verdict %in% c("displacement questions found", "no displacement question"), 4),
+           str_detect(x$questionnaire_verdict, "questions found|no displacement question"), 4),
     list("still unsure (web page)", function(x) x$final_tier == "unsure - check questionnaire", 4),
     list("new output / edition",   function(x) x$match_v2_category %in% c("new output of GAIN example", "new edition"), 4),
     list("agency route",           function(x) x$route == "international agency" &
