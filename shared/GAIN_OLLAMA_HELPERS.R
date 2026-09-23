@@ -160,7 +160,15 @@ ollama_available <- function() {
   if (!file.exists(p)) return(NULL)
   tryCatch(readRDS(p), error = function(e) { message("  (cache unreadable, recomputing: ", basename(p), ")"); NULL })
 }
-.cache_put  <- function(kind, key, val) saveRDS(val, .cache_path(kind, key))
+# a cache write that fails (file held by OneDrive sync) must not abort a run:
+# retry once after removing the old copy, else continue uncached
+.cache_put  <- function(kind, key, val) {
+  p <- .cache_path(kind, key)
+  ok <- tryCatch({ saveRDS(val, p); TRUE }, error = function(e) FALSE)
+  if (!ok) ok <- tryCatch({ unlink(p); saveRDS(val, p); TRUE }, error = function(e) FALSE)
+  if (!ok) message("  (cache write failed, continuing uncached: ", basename(p), ")")
+  invisible(ok)
+}
 
 # ------------------------------------------------------------------------------
 # Decision log (append-only; one row per extract_evidence call)
