@@ -1,0 +1,19 @@
+# Copy to .Renviron (same folder) and fill in. .Renviron is never committed.
+# R reads it automatically when started in this folder.
+
+# Google Programmable Search Engine IDs (one engine per group of NSO domains)
+GOOGLE_CSE_CX=
+GOOGLE_CSE_CX2=
+GOOGLE_CSE_CX3=
+GOOGLE_CSE_CX4=
+
+# Search API keys (empty slots are skipped)
+SEARCH_API_KEY_1=
+SEARCH_API_KEY_1_PROJECT=
+BRAVE_API_KEY=
+EXA_API_KEY=
+
+# Optional
+# GAIN_ROOT=        # the "Integration & GAIN Survey" folder, if not found automatically
+# GAIN_RECS_DIR=    # folder with the IRRS / IRIS / IROSS PDFs (keyword suggester)
+# GAIN_LLM_BACKEND= # lmstudio | ollama (default: auto-detect)

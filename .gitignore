@@ -1,0 +1,35 @@
+# PUBLIC repository: code + documentation only.
+# Whitelist approach - everything in this folder is ignored unless listed below,
+# so data, contacts, outputs, caches and keys can never be committed by accident.
+/*
+!/.gitignore
+!/README.md
+!/WORKFLOW.md
+!/RUN_IDENTIFY.R
+!/RUN_REACHOUT.R
+!/RUN_SDG.R
+!/GAIN_WebScraping.Rproj
+!/.Renviron.example
+!/NSO_Full_Registry.csv
+!/shared/
+!/identify/
+!/outreach/
+!/sdg/
+!/lake/
+!/docs/
+
+# never, anywhere
+.Renviron
+.Rhistory
+.Rproj.user/
+*.backup
+*-backup
+*.prebackup
+*.ollama-backup
+*.retired
+*.csv
+!/NSO_Full_Registry.csv
+*.xlsx
+*.rds
+~$*
+.DS_Store

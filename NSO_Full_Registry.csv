@@ -1,0 +1,173 @@
+﻿"country","domain","languages","cse_group","note","priority"
+"Kenya","knbs.or.ke","en",1,NA,1
+"Uganda","ubos.org","en",1,NA,1
+"Tanzania","nbs.go.tz","en,sw",1,NA,1
+"Ethiopia","statsethiopia.gov.et","en",1,NA,1
+"South Africa","statssa.gov.za","en",1,NA,2
+"Zimbabwe","zimstat.co.zw","en",1,NA,1
+"Zambia","zamstats.gov.zm","en",1,NA,1
+"Nigeria","nigerianstat.gov.ng","en",1,NA,1
+"Ghana","statsghana.gov.gh","en",1,NA,2
+"Senegal","ansd.sn","fr",1,NA,2
+"Jordan","dos.gov.jo","ar,en",1,NA,1
+"Lebanon","cas.gov.lb","ar,en,fr",1,NA,1
+"Iraq","cosit.gov.iq","ar,en",1,NA,1
+"Türkiye","tuik.gov.tr","tr,en",1,NA,1
+"Bangladesh","bbs.gov.bd","en",1,NA,1
+"Pakistan","pbs.gov.pk","en",1,NA,1
+"Colombia","dane.gov.co","es",1,NA,1
+"Mexico","inegi.org.mx","es",1,NA,2
+"Sudan","cbs.gov.sd","ar,en",1,NA,1
+"South Sudan","nbs.gov.ss","en",1,NA,1
+"Somalia","nbs.gov.so","en",1,NA,1
+"DR Congo","ins-rdc.org","fr",1,NA,1
+"Chad","inseed.td","fr",1,NA,1
+"Cameroon","ins-cameroun.cm","fr,en",1,NA,1
+"Mali","instat-mali.org","fr",1,NA,1
+"Burkina Faso","insd.bf","fr",1,NA,1
+"Niger","stat-niger.org","fr",1,NA,1
+"Mozambique","ine.gov.mz","pt",1,NA,1
+"Rwanda","statistics.gov.rw","en",1,NA,1
+"Burundi","insbu.bi","fr",1,NA,1
+"Egypt","capmas.gov.eg","ar",1,NA,1
+"Morocco","hcp.ma","fr,ar",1,NA,2
+"Tunisia","ins.tn","fr,ar",1,NA,2
+"Côte d'Ivoire","ins.ci","fr",1,NA,2
+"State of Palestine","pcbs.gov.ps","ar,en",1,NA,1
+"Afghanistan","nsia.gov.af","en",1,NA,1
+"Syria","cbssyr.sy","ar",1,NA,1
+"Armenia","armstat.am","en,ru",1,NA,2
+"Azerbaijan","stat.gov.az","en,ru",1,NA,2
+"Georgia","geostat.ge","en",1,NA,2
+"Ukraine","ukrstat.gov.ua","en,uk,ru",1,NA,1
+"Moldova","statistica.md","en,ru",1,NA,2
+"Kazakhstan","stat.gov.kz","ru,en",1,NA,2
+"Kyrgyzstan","stat.kg","ru",1,NA,2
+"Nepal","nsonepal.gov.np","en",1,NA,2
+"Sri Lanka","statistics.gov.lk","en",1,NA,2
+"Philippines","psa.gov.ph","en",1,NA,2
+"Indonesia","bps.go.id","en,id",1,NA,2
+"Peru","inei.gob.pe","es",1,NA,1
+"Ecuador","ecuadorencifras.gob.ec","es",1,NA,1
+"Algeria","ons.dz","fr,ar",2,NA,2
+"Libya","bsc.ly","ar",2,"verify domain before running",1
+"Mauritania","ansade.mr","fr,ar",2,NA,1
+"Gambia","gbosdata.org","en",2,NA,2
+"Guinea","stat-guinee.org","fr",2,NA,2
+"Guinea-Bissau","stat-guinebissau.com","pt",2,"verify domain before running",2
+"Sierra Leone","statistics.sl","en",2,NA,2
+"Liberia","lisgis.gov.lr","en",2,"verify domain before running",2
+"Togo","inseed.tg","fr",2,NA,2
+"Benin","instad.bj","fr",2,NA,2
+"Cabo Verde","ine.cv","pt",2,NA,2
+"Central African Republic","icasees.org","fr",2,"verify domain before running",1
+"Congo","ins-congo.cg","fr",2,"verify domain before running",2
+"Equatorial Guinea","inege.gq","es",2,NA,2
+"Angola","ine.gov.ao","pt",2,NA,1
+"Namibia","nsa.org.na","en",2,NA,2
+"Botswana","statsbots.org.bw","en",2,NA,2
+"Lesotho","bos.gov.ls","en",2,NA,2
+"Eswatini","cso.gov.sz","en",2,"verify domain before running",2
+"Malawi","nsomalawi.mw","en",2,NA,2
+"Madagascar","instat.mg","fr",2,NA,2
+"Mauritius","statsmauritius.govmu.org","en",2,NA,2
+"Seychelles","nbs.gov.sc","en",2,NA,2
+"Comoros","inseed.km","fr",2,"verify domain before running",2
+"Djibouti","instad.dj","fr",2,"verify domain before running",2
+"São Tomé and Príncipe","ine.st","pt",2,NA,2
+"Saudi Arabia","stats.gov.sa","ar,en",2,NA,2
+"United Arab Emirates","fcsc.gov.ae","ar,en",2,NA,2
+"Qatar","psa.gov.qa","ar,en",2,"may have rebranded to npc.qa - verify",2
+"Kuwait","csb.gov.kw","ar,en",2,NA,2
+"Bahrain","data.gov.bh","ar,en",2,"verify domain before running",2
+"Oman","ncsi.gov.om","ar,en",2,NA,2
+"Yemen","cso-yemen.org","ar",2,"verify domain before running",1
+"Iran","amar.org.ir","en,fa",2,NA,2
+"Israel","cbs.gov.il","en,he",2,NA,2
+"Tajikistan","stat.tj","ru",2,"verify domain before running",2
+"Turkmenistan","stat.gov.tm","ru",2,NA,2
+"Uzbekistan","stat.uz","ru,en",2,NA,2
+"Mongolia","nso.mn","en,mn",2,NA,2
+"Belarus","belstat.gov.by","ru",2,NA,2
+"Serbia","stat.gov.rs","en,bcs",2,NA,2
+"Bosnia and Herzegovina","bhas.gov.ba","en,bcs",2,NA,2
+"North Macedonia","stat.gov.mk","en,mk",2,NA,2
+"Albania","instat.gov.al","en,sq",2,NA,2
+"Montenegro","monstat.org","en,bcs",2,NA,2
+"Kosovo","ask.rks-gov.net","en,sq",2,NA,2
+"Croatia","dzs.hr","en,bcs",2,NA,3
+"Slovenia","stat.si","en,sl",2,NA,3
+"Bulgaria","nsi.bg","en,bg",2,NA,2
+"Romania","insse.ro","en,ro",2,NA,2
+"Hungary","ksh.hu","en,hu",3,NA,3
+"Poland","stat.gov.pl","en,pl",3,NA,3
+"Czechia","czso.cz","en,cs",3,NA,3
+"Slovakia","statistics.sk","en,sk",3,"verify - official site is slovak.statistics.sk",3
+"Greece","statistics.gr","en,el",3,NA,3
+"Cyprus","cystat.gov.cy","en,el",3,NA,3
+"Malta","nso.gov.mt","en",3,NA,3
+"Latvia","stat.gov.lv","en,lv",3,NA,3
+"Lithuania","stat.gov.lt","en,lt",3,NA,3
+"Estonia","stat.ee","en,et",3,NA,3
+"Finland","stat.fi","en,fi",3,NA,3
+"Sweden","scb.se","en,sv",3,NA,3
+"Norway","ssb.no","en,no",3,NA,3
+"Denmark","dst.dk","en,da",3,NA,3
+"Iceland","statice.is","en",3,"statice.is is the English-language site",3
+"Ireland","cso.ie","en",3,NA,3
+"United Kingdom","ons.gov.uk","en",3,NA,3
+"Germany","destatis.de","en,de",3,NA,3
+"France","insee.fr","fr",3,NA,3
+"Netherlands","cbs.nl","en,nl",3,NA,3
+"Belgium","statbel.fgov.be","fr,nl,en",3,NA,3
+"Luxembourg","statistiques.public.lu","fr",3,NA,3
+"Switzerland","bfs.admin.ch","fr,de,en",3,NA,3
+"Austria","statistik.at","en,de",3,NA,3
+"Italy","istat.it","en,it",3,NA,3
+"Spain","ine.es","es",3,NA,3
+"Portugal","ine.pt","pt",3,NA,3
+"Brazil","ibge.gov.br","pt",3,NA,3
+"Argentina","indec.gob.ar","es",3,NA,3
+"Chile","ine.gob.cl","es",3,NA,3
+"Bolivia","ine.gob.bo","es",3,NA,2
+"Paraguay","ine.gov.py","es",3,NA,2
+"Uruguay","ine.gub.uy","es",3,NA,3
+"Venezuela","ine.gob.ve","es",3,"verify domain before running",1
+"Guyana","statisticsguyana.gov.gy","en",3,NA,3
+"Suriname","statistics-suriname.org","en",3,NA,3
+"Panama","inec.gob.pa","es",3,NA,2
+"Costa Rica","inec.cr","es",3,NA,2
+"Nicaragua","inide.gob.ni","es",3,NA,2
+"Honduras","ine.hn","es",3,NA,2
+"El Salvador","onec.bcr.gob.sv","es",3,"verify - DIGESTYC merged into BCR/ONEC",2
+"Guatemala","ine.gob.gt","es",3,NA,2
+"Belize","sib.org.bz","en",3,NA,3
+"Dominican Republic","one.gob.do","es",3,NA,2
+"Haiti","ihsi.ht","fr",3,"verify domain before running",2
+"Jamaica","statinja.gov.jm","en",3,NA,2
+"Trinidad and Tobago","cso.gov.tt","en",3,NA,2
+"Cuba","onei.gob.cu","es",3,NA,2
+"Canada","statcan.gc.ca","en,fr",3,NA,3
+"United States","census.gov","en",3,NA,3
+"India","mospi.gov.in","en",4,NA,2
+"China","stats.gov.cn","en,zh",4,NA,2
+"Myanmar","csostat.gov.mm","en",4,"verify domain before running",1
+"Thailand","nso.go.th","en,th",4,NA,2
+"Viet Nam","gso.gov.vn","en,vi",4,NA,2
+"Cambodia","nis.gov.kh","en",4,NA,2
+"Laos","lsb.gov.la","en",4,NA,2
+"Malaysia","dosm.gov.my","en,ms",4,NA,2
+"Singapore","singstat.gov.sg","en",4,NA,3
+"Timor-Leste","statistics.gov.tl","en,pt",4,"verify - new institute INETL may use another domain",2
+"Papua New Guinea","nso.gov.pg","en",4,NA,3
+"Fiji","statsfiji.gov.fj","en",4,NA,3
+"Solomon Islands","statistics.gov.sb","en",4,NA,3
+"Vanuatu","vnso.gov.vu","en",4,NA,3
+"Samoa","sbs.gov.ws","en",4,NA,3
+"Tonga","tongastats.gov.to","en",4,NA,3
+"Maldives","statisticsmaldives.gov.mv","en",4,NA,3
+"Bhutan","nsb.gov.bt","en",4,NA,3
+"South Korea","kostat.go.kr","en,ko",4,NA,3
+"Japan","stat.go.jp","en,ja",4,NA,3
+"Australia","abs.gov.au","en",4,NA,3
+"New Zealand","stats.govt.nz","en",4,NA,3

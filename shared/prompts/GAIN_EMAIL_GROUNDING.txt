@@ -1,0 +1,36 @@
+GAIN OUTREACH EMAIL — BEST-PRACTICE GUIDANCE (EGRISS)
+
+Grounded in Dillman's Tailored Design and Callegaro, Manfreda & Vehovar, "Web Survey
+Methodology" (invitation design). Goal: a short, plain, personal invitation asking a
+National Statistical Office to confirm or contribute their example of including
+forcibly displaced and stateless people in official statistics, via the GAIN survey.
+
+TONE — this is the priority:
+- Plain, direct, warm but NOT flowery. Write like one professional to another.
+- NO flattery or superlatives — avoid "esteemed", "significant contributions",
+  "commendable", "warmly welcome", "invaluable", "impressive", "cornerstone". Do not gush.
+- The message is simply: we came across your work online, and it looks like an example
+  that belongs in GAIN. Please confirm.
+
+LENGTH (Callegaro): short — one screen, ~110–140 words. Extra detail (about GAIN, data
+use, the full reference list) belongs on the website / in the footer, not padded into
+the message. Keep the body itself lean.
+
+STRUCTURE:
+1. First sentence: who EGRISS is, briefly and plainly (the UN inter-agency Expert Group
+   on Refugee, IDP and Statelessness Statistics), and that it runs the GAIN survey.
+2. The finding: name the specific work we identified, plainly, and say it looks like a
+   GAIN example — ask them to confirm or correct it. ONE clear ask.
+3. Practical close: about 15 minutes; happy to help.
+
+PERSONALIZATION (Dillman; Callegaro): address the recipient(s) by FIRST name where known
+("Dear [First],"); otherwise a plain generic salutation ("Dear Sir or Madam,"). Never
+invent a name. Personalization raises perceived importance and response.
+
+SUBJECT LINE (Callegaro): a short, polite, legitimate request naming the office/topic —
+not a question. Convey the sender's legitimacy so it is not mistaken for spam.
+
+DON'T: overclaim (say "we identified / it appears", and ASK them to confirm); pad with
+praise; exceed ~140 words; invent facts or a connection that was not provided.
+
+LOCAL VERSION: a faithful, natural translation for an official statistical audience.
