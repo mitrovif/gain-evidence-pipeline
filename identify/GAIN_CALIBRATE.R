@@ -83,7 +83,16 @@ if (!file.exists(sheet_path)) {
     got <- pool %>% slice_sample(n = min(st[[3]], nrow(pool))) %>% mutate(stratum = st[[1]])
     taken <<- c(taken, got$row_id)
     got
-  }) %>% slice_sample(prop = 1)            # shuffle so strata are not grouped
+  })
+  # top up to N when a stratum ran dry (e.g. few unseen new editions left):
+  # NSO-route shortlist rows first, then anything scored
+  short_n <- N - nrow(s)
+  if (short_n > 0) {
+    pool <- d %>% filter(!row_id %in% taken, final_tier %in% c("reach out", "review then reach out"))
+    pool <- bind_rows(pool %>% filter(route == "NSO (direct)"), pool %>% filter(route != "NSO (direct)"))
+    s <- bind_rows(s, pool %>% slice_head(n = short_n) %>% mutate(stratum = "top-up: shortlist"))
+  }
+  s <- s %>% slice_sample(prop = 1)       # shuffle so strata are not grouped
 
   view <- s %>% transmute(
     review_id = sprintf("R%02d", row_number()),
