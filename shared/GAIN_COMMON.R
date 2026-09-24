@@ -56,6 +56,10 @@ harmonize_country <- function(x) {
     "Gambia, The"                   = "Gambia",
     "Lao PDR"                       = "Lao People's Democratic Republic",
     "Korea, Rep."                   = "Republic of Korea",
+    # contact workbook (2026 sample file) / roster spellings:
+    "United Kingdom of Great Britain and Northern Ireland" = "United Kingdom",
+    "UK"                            = "United Kingdom",
+    "Turkiye"                       = "Türkiye",
     .default = x
   )
 }
