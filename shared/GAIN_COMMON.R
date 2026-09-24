@@ -60,6 +60,27 @@ harmonize_country <- function(x) {
     "United Kingdom of Great Britain and Northern Ireland" = "United Kingdom",
     "UK"                            = "United Kingdom",
     "Turkiye"                       = "Türkiye",
+    # UNSD / UNFPA / UNHCR census and population sources:
+    "Iran, Islamic Republic of"     = "Iran (Islamic Republic of)",
+    "Iran (Islamic Rep. of)"        = "Iran (Islamic Republic of)",
+    "Palestine, State of"           = "State of Palestine",
+    "Guinea Bissau"                 = "Guinea-Bissau",
+    "Cameroon Republic of"          = "Cameroon",
+    "Congo Democratic Republic of the" = "Democratic Republic of the Congo",
+    "Dem. Rep. of the Congo"        = "Democratic Republic of the Congo",
+    "Congo Republic of the"         = "Congo",
+    "Tanzania United Republic of"   = "United Republic of Tanzania",
+    "United Rep. of Tanzania"       = "United Republic of Tanzania",
+    "China - Hong Kong SAR"         = "China, Hong Kong SAR",
+    "China - Macao SAR"             = "China, Macao SAR",
+    "Korea, Republic of"            = "Republic of Korea",
+    "Korea, Democratic People's Republic of" = "Democratic People's Republic of Korea",
+    "Libya Arab Jamahiriya"         = "Libya",
+    "Micronesia, Federated States of" = "Micronesia (Federated States of)",
+    "Sao Tomé and Principé"         = "Sao Tome and Principe",
+    "St. Kitts and Nevis"           = "Saint Kitts and Nevis",
+    "St. Lucia"                     = "Saint Lucia",
+    "St. Vincent and the Grenadines" = "Saint Vincent and the Grenadines",
     .default = x
   )
 }

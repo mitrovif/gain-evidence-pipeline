@@ -97,6 +97,10 @@ run_step("Finalize  -> combined verdict + reach-out shortlist + dashboard table"
 run_step("Power BI  -> powerbi_export/ pack",                   "identify/GAIN_POWERBI_EXPORT.R")
 # Displacement-CONTEXT dimension (UNICEF SDMX: IDP magnitudes per country, IDMC-
 # sourced). Context only, not evidence; relates to dim_country in Power BI.
+# Upcoming / recent censuses to ask about (UNSD dates + UNFPA tracker + UNHCR
+# population): network only, no LLM, ~20 s. Planned inclusion counts in GAIN.
+if (file.exists("identify/GAIN_UPCOMING_CENSUS.R"))
+  run_step("Censuses -> planned/recent censuses to ask about",        "identify/GAIN_UPCOMING_CENSUS.R")
 if (file.exists("identify/GAIN_SDMX_DISPLACEMENT.R"))
   run_step("SDMX context -> WEB_GAIN_displacement_context",      "identify/GAIN_SDMX_DISPLACEMENT.R")
 
@@ -121,7 +125,8 @@ local({
   dir.create(sub, recursive = TRUE, showWarnings = FALSE)
   tabs <- c("WEB_GAIN_fact_candidates.csv", "WEB_GAIN_dim_country.csv",
             "WEB_GAIN_fact_contacts.csv", "WEB_GAIN_processing_status.csv",
-            "WEB_GAIN_final.csv", "WEB_GAIN_displacement_context.csv")
+            "WEB_GAIN_final.csv", "WEB_GAIN_displacement_context.csv",
+            "WEB_GAIN_upcoming_censuses.csv")
   for (t in tabs) { s <- file.path("powerbi_export", t)
     if (file.exists(s)) file.copy(s, file.path(sub, t), overwrite = TRUE) }
   message("  identification dashboard tables -> ", sub, "/")
