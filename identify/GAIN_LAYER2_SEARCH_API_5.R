@@ -572,6 +572,9 @@ for (i in seq_len(nrow(nso_registry))) {
     if (nrow(already) > 0) next
 
     message(paste0("[", row$country, "] ", q$lang, "/", q$population))
+    # GAIN_SHOW_QUERY=1 prints the actual site-restricted query (demo/recording use)
+    if (Sys.getenv("GAIN_SHOW_QUERY") == "1")
+      message(paste0("    site:", row$domain, "  ", str_trunc(q$query, 110)))
 
     cx_for_country <- GOOGLE_CX_BY_GROUP[as.character(row$cse_group)]
 
@@ -638,6 +641,8 @@ for (i in seq_len(nrow(nso_registry))) {
         filter(str_detect(url, fixed(row$domain)))
       write_csv(hits, results_file, append = file.exists(results_file))
       message(paste("   ", nrow(hits), "hits"))
+      if (Sys.getenv("GAIN_SHOW_QUERY") == "1" && nrow(hits))
+        for (tt in head(hits$title, 2)) message("      \u2192 ", str_trunc(tt, 95))
     } else {
       message("    0 hits")
     }
