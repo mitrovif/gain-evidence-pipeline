@@ -159,7 +159,11 @@ reach <- read & counted & final_score >= REACH_MIN & !(operational & route == "N
 # is context, not an ask - unless the questionnaire or a GAIN parent says otherwise.
 DISP_FOCUS_PAT <- paste0("refug|asylum|asile|asilo|displac|d[eé]plac|desplaz|\\bidps?\\b|stateless|",
   "apatrid|returnee|retourn|forcibly|temporary protection|humanitarian (visa|scheme|protection)|",
-  "ukrain|rohingya|flykt|vluchtel|fl[uü]chtling|schutzsuchend|\u0644\u0627\u062c\u0626|\u0646\u0627\u0632\u062d")
+  "ukrain|rohingya|flykt|vluchtel|fl[uü]chtling|schutzsuchend|",
+  # resettlement / humanitarian-stream wording (Australia "Migrant settlement outcomes":
+  # Census linked to the Home Affairs Settlement Database = humanitarian entrants)
+  "settlement (database|outcomes)|humanitarian|resettle|status ?holder|statushouder|kvoteflykt|",
+  "protection visa|visa stream|\u0644\u0627\u062c\u0626|\u0646\u0627\u0632\u062d")
 no_focus <- !str_detect(paste(t, low(pk("llm_quote"))), DISP_FOCUS_PAT)
 
 final_tier <- case_when(
