@@ -272,6 +272,14 @@ pair_check <- function(c_org, c_tok, c_acr, c_type, c_year, c_lang, e,
   # same census even when the titles share no words (Rwanda census tables vs
   # the GAIN "Refugees thematic report" of the same 2022 census)
   census_round <- org_ok && c_type == "census" && e$gtype == "census" && y_in
+  # review C (Sep 2026): a UNHCR/JIPS/JDC/WB/IOM household survey in a country where
+  # GAIN already holds one from that family, same period, is often the same exercise
+  # under another name (Pemba "Urban Durable Solutions Survey" = JIPS "household
+  # survey in metropolitan Pemba") -> a person checks
+  FAM <- c("UNHCR", "JIPS", "JDC", "WB", "IOM")
+  agency_fam <- length(intersect(c_org$agencies, FAM)) > 0 &&
+                length(intersect(e$gorg[[1]]$agencies, FAM)) > 0 &&
+                c_type == "survey" && e$gtype == "survey" && (y_in || y_unk)
   # a separate displacement-focused report built on a GAIN survey/census = NEW
   new_output <- org_ok && (same_name || name_single) && e$gtype %in% c("survey", "census") &&
     c_output && c_focus && !is_output_title(e$title)
@@ -284,6 +292,7 @@ pair_check <- function(c_org, c_tok, c_acr, c_type, c_year, c_lang, e,
     else if (!org_ok && same_name && type_ok)                    "check - likely same"
     else if (org_ok && name_single && type_ok)                   "check - likely same"
     else if (org_ok && type_ok && non_en && !name_mid)           "check - other language"
+    else if (agency_fam)                                         "check - likely same"
     else if (org_ok)                                             "same org, other product"
     else                                                         "other producer"
   rank <- match(cat, c("same product", "new edition", "new output of GAIN example", "check - likely same",
@@ -360,7 +369,13 @@ for (i in seq_len(n)) {
   top3 <- paste(vapply(head(ord, 3), function(j) sprintf("%s: %s (%s)",
             ex$pindex2[j], str_sub(ex$title[j], 1, 50), pcs[[j]]$cat), character(1)), collapse = " || ")
   bcat <- pcs[[b]]$cat
-  if (eu) bcat <- if (bcat %in% c("same product", "new edition")) bcat else "regional (Eurostat)"
+  if (eu) {
+    # review C (Sep 2026): Eurostat population / asylum tables are covered by
+    # Eurostat's own GAIN example ("Redeveloping European statistics on population
+    # and migration") -> already in GAIN, not a new regional example
+    cover <- which(str_detect(fold(ex$title), "population|migration|asylum"))
+    if (bcat != "new edition") { bcat <- "same product"; if (length(cover)) e <- ex[cover[1], ] }
+  }
   res[[i]] <- list(cat = bcat, pindex2 = as.character(e$pindex2), gidx = as.character(e$gain_index),
     gtitle = e$title,
     gorg = e$org, gtype = e$gtype, gyears = sprintf("%s-%s", e$y0, coalesce(e$y1, e$y0)),

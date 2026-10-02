@@ -106,7 +106,8 @@ REGIONAL_PAT <- paste0("eurostat|\\bescap\\b|\\bescwa\\b|\\beclac\\b|\\bcepal\\b
 AGENCY_PAT <- paste0("unhcr|acnur|un refugee agency|high commissioner for refugees|\\biom\\b|\\boim\\b|",
   "displacement tracking|\\bdtm\\b|world bank|joint data cent|\\bjdc\\b|\\bjips\\b|\\bidmc\\b|unicef|unfpa|",
   "undp|\\bwfp\\b|\\breach\\b|impact initiatives|\\bhdx\\b|\\bocha\\b|\\bnrc\\b|\\bdrc\\b danish")
-OPERATIONAL_PAT <- "results monitoring survey|\\brms\\b|\\bmsna\\b|multi.?sector needs|post.?distribution|\\bpdm\\b|protection monitoring"
+OPERATIONAL_PAT <- paste0("results monitoring survey|\\brms\\b|\\bmsna\\b|multi.?sector needs|post.?distribution|\\bpdm\\b|",
+  "protection monitoring|standardi[sz]ed expanded nutrition|\\bsens\\b|nutrition survey")
 NSO_PAT <- "statisti|estad[ií]st|census|\\bine\\b|\\binsee\\b|\\bistat\\b|bureau of stat|national population commission|high commission for planning"
 o <- low(org_s); t <- low(title_s)
 nso_site <- on_nso_site(url, as.character(pk("country")))
@@ -151,6 +152,15 @@ unreadable <- !got_txt & final_score < 50                 # AI saw a snippet onl
 unsure     <- read & !counted & !is.na(llm) & llm == 40   # the AI's "no evidence either way"
 operational <- str_detect(t, OPERATIONAL_PAT)
 reach <- read & counted & final_score >= REACH_MIN & !(operational & route == "NSO (direct)")
+# review C (Sep 2026): general migration / immigrant statistics were rated "not
+# relevant" (Filipino and Latin American populations in Canada, immigrants in
+# Norway, US migration estimates, UK LFS method, French poverty). If neither the
+# title nor the AI's evidence quote names a displaced or stateless group, the lead
+# is context, not an ask - unless the questionnaire or a GAIN parent says otherwise.
+DISP_FOCUS_PAT <- paste0("refug|asylum|asile|asilo|displac|d[eé]plac|desplaz|\\bidps?\\b|stateless|",
+  "apatrid|returnee|retourn|forcibly|temporary protection|humanitarian (visa|scheme|protection)|",
+  "ukrain|rohingya|flykt|vluchtel|fl[uü]chtling|schutzsuchend|\u0644\u0627\u062c\u0626|\u0646\u0627\u0632\u062d")
+no_focus <- !str_detect(paste(t, low(pk("llm_quote"))), DISP_FOCUS_PAT)
 
 final_tier <- case_when(
   junk                                 ~ "junk - login/redirect page",
@@ -158,6 +168,10 @@ final_tier <- case_when(
   historic                             ~ "historic - context only",
   maybe_in_gain & final_score >= 50    ~ "review - possible GAIN match",
   !read                                ~ "not assessed",
+  # review C: operational agency surveys (RMS, PDM, SENS, MSNA) were "maybe" at best
+  operational                          ~ "watch / context",
+  no_focus & !q_yes & !v2cat %in% c("new edition", "new output of GAIN example") &
+    final_score >= 40                  ~ "watch / context",
   reach                                ~ "reach out",
   counted & final_score >= 50          ~ "review then reach out",
   # its parent is already in GAIN, so it is relevant by definition (reviewer: R08
@@ -190,6 +204,8 @@ use_for_sdg <- !junk & !historic & (counted | in_gain | q_yes) & str_detect(t, S
 # ---- final_reason ------------------------------------------------------------
 kwnote <- ifelse(disagree, " (keyword under-rated)", "")
 final_reason <- case_when(
+  final_tier == "watch / context" & operational ~ "agency operational survey (RMS/PDM/SENS/MSNA): context, not an ask",
+  final_tier == "watch / context" & no_focus & read ~ "no displaced or stateless group named in the title or the evidence: migration statistics, context only",
   junk ~ "sign-in / redirect URL, no document",
   in_gain | maybe_in_gain ~ sprintf("%s GAIN %s (example %s) - %s", if_else(in_gain, "matches", "may match"),
       coalesce(na_if(pidx, ""), "?"), coalesce(na_if(gidx, ""), "?"), substr(gtitle, 1, 60)),
